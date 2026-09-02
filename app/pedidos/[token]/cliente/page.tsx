@@ -1,13 +1,21 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { CheckCircle2 } from "lucide-react";
 
 import { BrandLogo } from "@/components/brand-logo";
-import { getPortalData } from "@/lib/data/portal";
+import { getPortalData, getClientePorToken } from "@/lib/data/portal";
+import { brandingStyle } from "@/lib/branding";
 import { PedidoClienteForm } from "./pedido-cliente-form";
 
-export const metadata = {
-  title: "Hacer pedido",
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ token: string }>;
+}): Promise<Metadata> {
+  const { token } = await params;
+  const cliente = await getClientePorToken(token);
+  return { title: cliente ? `Pedido · ${cliente.branding.nombreApp}` : "Hacer pedido" };
+}
 
 export default async function PortalClientePage({
   params,
@@ -23,10 +31,15 @@ export default async function PortalClientePage({
   if (!data) return notFound();
 
   const { cliente, productos } = data;
+  const { branding } = cliente;
+  const style = brandingStyle(branding);
 
   if (pedido) {
     return (
-      <main className="mx-auto flex min-h-screen max-w-md flex-col items-center justify-center gap-4 p-6 text-center">
+      <main
+        className="mx-auto flex min-h-screen max-w-md flex-col items-center justify-center gap-4 p-6 text-center"
+        style={style}
+      >
         <CheckCircle2 className="size-14 text-green-600 dark:text-green-500" />
         <div className="space-y-1">
           <h1 className="font-heading text-xl font-semibold text-foreground">
@@ -48,10 +61,14 @@ export default async function PortalClientePage({
   }
 
   return (
-    <main className="mx-auto min-h-screen max-w-md">
+    <main className="mx-auto min-h-screen max-w-md" style={style}>
       <header className="border-b bg-card px-4 py-3">
         <div className="flex items-center gap-2.5">
-          <BrandLogo />
+          <BrandLogo
+            logoUrl={branding.logoUrl}
+            nombre={branding.nombreApp}
+            subtitulo={branding.subtituloApp}
+          />
           <div className="min-w-0 leading-tight">
             <p className="truncate text-sm font-semibold text-foreground">
               {cliente.tenant_nombre}
@@ -65,8 +82,8 @@ export default async function PortalClientePage({
 
       <div className="px-4">
         <p className="py-3 text-xs text-muted-foreground">
-          Elegí los productos y las cantidades. Al final revisás el total y
-          enviás el pedido.
+          {branding.mensajePortal ??
+            "Elegí los productos y las cantidades. Al final revisás el total y enviás el pedido."}
         </p>
         <PedidoClienteForm token={token} productos={productos} />
       </div>

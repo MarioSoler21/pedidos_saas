@@ -5,6 +5,8 @@ import { DashboardNav } from "@/components/dashboard-nav";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { getDevTenant } from "@/lib/dev-session";
+import { getTenantBranding } from "@/lib/data/admin";
+import { brandingStyle } from "@/lib/branding";
 import { salirDelTenant } from "./actions";
 
 export default async function DashboardLayout({
@@ -18,12 +20,22 @@ export default async function DashboardLayout({
     redirect("/login");
   }
 
+  const branding = await getTenantBranding(tenant.id);
+
   return (
-    <div className="flex min-h-screen bg-muted/40">
+    <div
+      className="flex min-h-screen bg-muted/40"
+      style={brandingStyle(branding)}
+    >
       <aside className="flex w-60 shrink-0 flex-col justify-between border-r bg-sidebar p-4 text-sidebar-foreground">
         <div>
           <div className="px-1 py-1">
-            <BrandLogo withWordmark />
+            <BrandLogo
+              withWordmark
+              logoUrl={branding.logoUrl}
+              nombre={branding.nombreApp}
+              subtitulo={branding.subtituloApp}
+            />
           </div>
           <Separator className="my-4" />
           <DashboardNav />
@@ -33,7 +45,7 @@ export default async function DashboardLayout({
           <Separator />
           <div className="px-2">
             <p className="text-xs font-medium text-foreground">
-              {tenant.nombreEmpresa}
+              {branding.nombreEmpresa || tenant.nombreEmpresa}
             </p>
             <p className="text-xs text-muted-foreground">{tenant.etiquetaDemo}</p>
           </div>

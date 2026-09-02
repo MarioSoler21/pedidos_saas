@@ -1,5 +1,6 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getProductos, type Producto } from "@/lib/data/catalogo";
+import { toBranding, type TenantBranding } from "@/lib/branding";
 
 /**
  * Portal de cliente SIN login: se resuelve todo por clientes.token_unico.
@@ -14,7 +15,11 @@ export type PortalCliente = {
   nombre_negocio: string;
   tenant_id: number;
   tenant_nombre: string;
+  branding: TenantBranding;
 };
+
+const TENANT_BRANDING_COLS =
+  "nombre_empresa, nombre_app, subtitulo_app, mensaje_portal, logo_url, color_primario, color_secundario, color_sidebar";
 
 export async function getClientePorToken(
   token: string,
@@ -22,20 +27,25 @@ export async function getClientePorToken(
   const supabase = createAdminClient();
   const { data, error } = await supabase
     .from("clientes")
-    .select("id, nombre_negocio, tenant_id, activo, tenants ( nombre_empresa )")
+    .select(
+      `id, nombre_negocio, tenant_id, activo, tenants ( ${TENANT_BRANDING_COLS} )`,
+    )
     .eq("token_unico", token)
     .maybeSingle();
 
   if (error) throw error;
   if (!data || !data.activo) return null;
 
-  const tenant = data.tenants as unknown as { nombre_empresa: string } | null;
+  const tenant = data.tenants as unknown as
+    | Record<string, string | null>
+    | null;
 
   return {
     id: data.id as number,
     nombre_negocio: data.nombre_negocio as string,
     tenant_id: data.tenant_id as number,
     tenant_nombre: tenant?.nombre_empresa ?? "",
+    branding: toBranding(tenant),
   };
 }
 

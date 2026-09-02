@@ -21,6 +21,11 @@ const idOpcional = z
 const montoNoNegativo = z.coerce
   .number()
   .refine((v) => Number.isFinite(v) && v >= 0, "No puede ser negativo");
+const hexOpcional = z
+  .string()
+  .trim()
+  .transform((v) => (v === "" ? null : v.toLowerCase()))
+  .refine((v) => v === null || /^#[0-9a-f]{6}$/.test(v), "Color inválido (#rrggbb)");
 
 export const ROLES = [
   "admin",
@@ -100,6 +105,12 @@ export const tenantConfigSchema = z.object({
     .min(1, "Requerido")
     .regex(/^[a-z0-9-]+$/, "Solo minúsculas, números y guiones"),
   plan: z.enum(PLANES),
+  nombre_app: textoOpcional,
+  subtitulo_app: textoOpcional,
+  mensaje_portal: textoOpcional,
+  color_primario: hexOpcional,
+  color_secundario: hexOpcional,
+  color_sidebar: hexOpcional,
 });
 
 export type FormState = {

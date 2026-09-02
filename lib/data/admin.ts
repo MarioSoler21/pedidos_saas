@@ -1,4 +1,5 @@
 import { createAdminClient } from "@/lib/supabase/admin";
+import { toBranding, type TenantBranding } from "@/lib/branding";
 
 /**
  * Lecturas para el panel /admin. Server-only, scoped explícitamente por
@@ -60,7 +61,17 @@ export type TenantRow = {
   slug: string;
   plan: string;
   activo: boolean;
+  nombre_app: string | null;
+  subtitulo_app: string | null;
+  mensaje_portal: string | null;
+  logo_url: string | null;
+  color_primario: string | null;
+  color_secundario: string | null;
+  color_sidebar: string | null;
 };
+
+const TENANT_COLS =
+  "id, nombre_empresa, slug, plan, activo, nombre_app, subtitulo_app, mensaje_portal, logo_url, color_primario, color_secundario, color_sidebar";
 
 export async function listUsuarios(tenantId: string): Promise<UsuarioRow[]> {
   const supabase = createAdminClient();
@@ -129,11 +140,19 @@ export async function getTenant(tenantId: string): Promise<TenantRow | null> {
   const supabase = createAdminClient();
   const { data, error } = await supabase
     .from("tenants")
-    .select("id, nombre_empresa, slug, plan, activo")
+    .select(TENANT_COLS)
     .eq("id", tenantId)
     .maybeSingle();
   if (error) throw error;
   return (data as TenantRow) ?? null;
+}
+
+/** Branding resuelto (con defaults aplicados) para el shell del dashboard. */
+export async function getTenantBranding(
+  tenantId: string,
+): Promise<TenantBranding> {
+  const row = await getTenant(tenantId);
+  return toBranding(row);
 }
 
 /** Contadores para el hub de /admin. */
