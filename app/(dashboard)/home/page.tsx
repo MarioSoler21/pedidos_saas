@@ -15,7 +15,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { getDevTenant } from "@/lib/dev-session";
+import { getSession } from "@/lib/session";
 
 const ACCESOS: {
   href: string;
@@ -56,7 +56,7 @@ const ACCESOS: {
 ];
 
 export default async function HomePage() {
-  const tenant = await getDevTenant();
+  const tenant = await getSession();
 
   return (
     <main className="p-6 lg:p-8">

@@ -1,11 +1,11 @@
-import { getDevTenant } from "@/lib/dev-session";
+import { getSession } from "@/lib/session";
 import type { FormState } from "@/lib/validation/admin";
 
 /** Módulo de helpers para las server actions de /admin (no es "use server"). */
 
 export async function requireTenant() {
-  const tenant = await getDevTenant();
-  if (!tenant) throw new Error("No hay tenant activo");
+  const tenant = await getSession();
+  if (!tenant) throw new Error("No hay sesión activa");
   return tenant;
 }
 

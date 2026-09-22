@@ -1,4 +1,4 @@
-import { getDevTenant } from "@/lib/dev-session";
+import { getSession } from "@/lib/session";
 import { listUsuarios } from "@/lib/data/admin";
 import { ROL_LABEL } from "@/lib/admin-labels";
 import { Badge } from "@/components/ui/badge";
@@ -16,7 +16,7 @@ import { UsuarioDialog } from "./usuario-dialog";
 import { setActivoUsuario } from "./actions";
 
 export default async function UsuariosAdminPage() {
-  const tenant = await getDevTenant();
+  const tenant = await getSession();
   const usuarios = tenant ? await listUsuarios(tenant.id) : [];
 
   return (

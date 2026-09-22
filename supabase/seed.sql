@@ -7,9 +7,10 @@
 -- query a productos no debe traer nada de "Ferreteria El Sol").
 --
 -- PKs bigint identity. Los tenants demo se fuerzan a id = 1 y id = 2
--- (overriding system value) para que coincidan con DEMO_TENANTS en
--- lib/dev-session.ts. El resto de ids los asigna la identidad y se capturan
--- con "returning id into" cuando hacen falta como FK mas adelante.
+-- (overriding system value) — el tenant 1 ("Distribuidora Uno") es el que
+-- usa lib/auth/bootstrap-usuario.ts para vincular el primer login real. El
+-- resto de ids los asigna la identidad y se capturan con "returning id into"
+-- cuando hacen falta como FK mas adelante.
 --
 -- Nota: cada INSERT especifica tenant_id explicitamente, asi que el trigger
 -- trg_10_set_tenant_id (que solo actua si tenant_id viene null) no

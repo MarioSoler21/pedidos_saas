@@ -1,13 +1,13 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { getDevTenant } from "@/lib/dev-session";
+import { getSession } from "@/lib/session";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { siguienteEstado, type EstadoPedido } from "@/lib/data/pedidos";
 
 /** Avanza un pedido al siguiente estado del flujo y deja rastro en pedido_historial. */
 export async function avanzarEstadoPedido(formData: FormData) {
-  const tenant = await getDevTenant();
+  const tenant = await getSession();
   if (!tenant) throw new Error("No hay tenant activo");
 
   const pedidoId = String(formData.get("pedidoId") ?? "");

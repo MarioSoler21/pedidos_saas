@@ -1,10 +1,10 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 
 /**
- * Lecturas server-only, explicitamente filtradas por tenant_id (viene de la
- * cookie dev, ver lib/dev-session.ts). Usa el cliente admin (service_role,
- * bypassa RLS) porque todavia no hay JWT real con app_metadata.tenant_id —
- * ver TODO en lib/dev-session.ts.
+ * Lecturas server-only, explicitamente filtradas por tenant_id (viene de
+ * lib/session.ts). Usa el cliente admin (service_role, bypassa RLS) en vez
+ * de confiar solo en RLS + JWT — TODO: migrar a un cliente normal una vez
+ * las paginas dejen de necesitar el filtro explicito.
  */
 
 export type Cliente = {

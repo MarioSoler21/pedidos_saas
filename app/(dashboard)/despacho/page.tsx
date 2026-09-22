@@ -1,4 +1,4 @@
-import { getDevTenant } from "@/lib/dev-session";
+import { getSession } from "@/lib/session";
 import {
   getPedidosParaDespacho,
   siguienteEstado,
@@ -41,7 +41,7 @@ const formatoFecha = new Intl.DateTimeFormat("es-HN", {
 });
 
 export default async function DespachoPage() {
-  const tenant = await getDevTenant();
+  const tenant = await getSession();
   const pedidos = tenant ? await getPedidosParaDespacho(tenant.id) : [];
 
   const porEstado = pedidos.reduce<Record<string, number>>((acc, p) => {

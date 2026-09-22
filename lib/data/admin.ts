@@ -3,9 +3,9 @@ import { toBranding, type TenantBranding } from "@/lib/branding";
 
 /**
  * Lecturas para el panel /admin. Server-only, scoped explícitamente por
- * tenant_id (viene de la cookie dev, ver lib/dev-session.ts). A diferencia de
- * lib/data/catalogo.ts, acá se traen TODAS las filas (activas e inactivas) y
- * todas las columnas editables.
+ * tenant_id (viene de lib/session.ts). A diferencia de lib/data/catalogo.ts,
+ * acá se traen TODAS las filas (activas e inactivas) y todas las columnas
+ * editables.
  */
 
 export type UsuarioRow = {

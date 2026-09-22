@@ -1,4 +1,4 @@
-import { getDevTenant } from "@/lib/dev-session";
+import { getSession } from "@/lib/session";
 import {
   listClientes,
   listZonas,
@@ -22,7 +22,7 @@ import { TokenCell } from "./token-cell";
 import { setActivoCliente } from "./actions";
 
 export default async function ClientesAdminPage() {
-  const tenant = await getDevTenant();
+  const tenant = await getSession();
   const [clientes, zonas]: [ClienteRow[], ZonaRow[]] = tenant
     ? await Promise.all([listClientes(tenant.id), listZonas(tenant.id)])
     : [[], []];

@@ -1,4 +1,4 @@
-import { getDevTenant } from "@/lib/dev-session";
+import { getSession } from "@/lib/session";
 import { getTenant } from "@/lib/data/admin";
 import { toBranding } from "@/lib/branding";
 import { AdminTabs } from "../_components/admin-tabs";
@@ -6,7 +6,7 @@ import { ConfigForm } from "./config-form";
 import { LogoUploader } from "./logo-uploader";
 
 export default async function ConfiguracionAdminPage() {
-  const tenant = await getDevTenant();
+  const tenant = await getSession();
   const row = tenant ? await getTenant(tenant.id) : null;
   const branding = toBranding(row);
 

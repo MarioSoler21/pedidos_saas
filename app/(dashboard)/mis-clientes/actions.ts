@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { getDevTenant } from "@/lib/dev-session";
+import { getSession } from "@/lib/session";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 /**
@@ -10,7 +10,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
  * formulario), inserta pedidos + pedido_items en la misma operacion.
  */
 export async function crearPedido(formData: FormData) {
-  const tenant = await getDevTenant();
+  const tenant = await getSession();
   if (!tenant) throw new Error("No hay tenant activo");
 
   const clienteId = String(formData.get("clienteId") ?? "");

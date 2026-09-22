@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getDevTenant } from "@/lib/dev-session";
+import { getSession } from "@/lib/session";
 import { getClientes, getProductos } from "@/lib/data/catalogo";
 import { crearPedido } from "../../actions";
 
@@ -26,7 +26,7 @@ export default async function NuevoPedidoPage({
   params: Promise<{ clienteId: string }>;
 }) {
   const { clienteId } = await params;
-  const tenant = await getDevTenant();
+  const tenant = await getSession();
   if (!tenant) return notFound();
 
   const [clientes, productos] = await Promise.all([

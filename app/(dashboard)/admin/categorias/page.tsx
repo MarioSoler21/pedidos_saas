@@ -1,4 +1,4 @@
-import { getDevTenant } from "@/lib/dev-session";
+import { getSession } from "@/lib/session";
 import { listCategorias } from "@/lib/data/admin";
 import {
   Table,
@@ -14,7 +14,7 @@ import { CategoriaDialog } from "./categoria-dialog";
 import { eliminarCategoria } from "./actions";
 
 export default async function CategoriasAdminPage() {
-  const tenant = await getDevTenant();
+  const tenant = await getSession();
   const categorias = tenant ? await listCategorias(tenant.id) : [];
 
   return (

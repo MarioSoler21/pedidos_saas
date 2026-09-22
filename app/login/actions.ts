@@ -1,19 +1,38 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { DEMO_TENANTS, setDevTenant } from "@/lib/dev-session";
+
+import { createClient } from "@/lib/supabase/server";
+
+export type LoginState = {
+  ok: boolean;
+  email: string;
+  error?: string;
+};
 
 /**
- * SOLO DEMO: "login" hardcodeado que fija el tenant activo en una cookie.
- * Sustituye al signup/login flow real de Supabase Auth (ver README-arquitectura.md).
+ * Login con correo + contraseña (Supabase Auth signInWithPassword). Las
+ * credenciales de cada usuario las crea un admin (Admin API,
+ * service_role) — no hay signup público.
  */
-export async function entrarComoTenant(formData: FormData) {
-  const tenantId = String(formData.get("tenantId") ?? "");
+export async function loginAction(
+  prev: LoginState,
+  formData: FormData,
+): Promise<LoginState> {
+  const email = String(formData.get("email") ?? "")
+    .trim()
+    .toLowerCase();
+  const password = String(formData.get("password") ?? "");
 
-  if (!DEMO_TENANTS.some((t) => t.id === tenantId)) {
-    throw new Error("Tenant demo invalido");
+  if (!email || !password) {
+    return { ok: false, email, error: "Ingresá tu correo y contraseña." };
   }
 
-  await setDevTenant(tenantId);
+  const supabase = await createClient();
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error) {
+    return { ok: false, email, error: "Correo o contraseña incorrectos." };
+  }
+
   redirect("/despacho");
 }

@@ -1,4 +1,4 @@
-import { getDevTenant } from "@/lib/dev-session";
+import { getSession } from "@/lib/session";
 import {
   listProductos,
   listCategorias,
@@ -20,7 +20,7 @@ import { ProductoDialog } from "./producto-dialog";
 import { setActivoProducto } from "./actions";
 
 export default async function ProductosAdminPage() {
-  const tenant = await getDevTenant();
+  const tenant = await getSession();
   const [productos, categorias]: [ProductoRow[], CategoriaRow[]] = tenant
     ? await Promise.all([listProductos(tenant.id), listCategorias(tenant.id)])
     : [[], []];

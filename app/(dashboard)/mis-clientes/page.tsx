@@ -8,11 +8,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { getDevTenant } from "@/lib/dev-session";
+import { getSession } from "@/lib/session";
 import { getClientes } from "@/lib/data/catalogo";
 
 export default async function MisClientesPage() {
-  const tenant = await getDevTenant();
+  const tenant = await getSession();
   const clientes = tenant ? await getClientes(tenant.id) : [];
 
   return (

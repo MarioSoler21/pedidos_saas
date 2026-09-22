@@ -11,12 +11,12 @@ import {
 } from "lucide-react";
 
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { getDevTenant } from "@/lib/dev-session";
+import { getSession } from "@/lib/session";
 import { getAdminCounts } from "@/lib/data/admin";
 import { AdminTabs } from "./_components/admin-tabs";
 
 export default async function AdminPage() {
-  const tenant = await getDevTenant();
+  const tenant = await getSession();
   const counts = tenant
     ? await getAdminCounts(tenant.id)
     : {
